@@ -16,9 +16,16 @@ builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 builder.Services.AddControllers();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IEncryptionService, EncryptionService>();
+builder.Services.AddScoped<ISpaceXService, SpaceXService>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddHttpClient("SpaceX", c =>
+{
+    c.BaseAddress = new Uri("https://api.spacexdata.com/v5/");
+    c.DefaultRequestHeaders.UserAgent.ParseAdd("SpaceXBackend/1.0");
+});
 
 var app = builder.Build();
 
