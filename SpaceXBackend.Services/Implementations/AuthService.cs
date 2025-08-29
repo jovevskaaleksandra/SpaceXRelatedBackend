@@ -16,6 +16,7 @@ namespace SpaceXBackend.Services.Implementations
             _dbContext = dbContext;
             _encryptionService = encryptionService;
         }
+
         public async Task<AuthResponse> SignUpAsync(SignUpRequest request)
         {
             // Encrypt the email of the user
@@ -48,6 +49,39 @@ namespace SpaceXBackend.Services.Implementations
             {
                 Success = true,
                 Message = "User registered successfully."
+            };
+        }
+
+        public async Task<AuthResponse> SignInAsync(SignInRequest request)
+        {
+            var encryptedEmail = _encryptionService.Encrypt(request.Email);
+
+            var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == encryptedEmail);
+
+            if (user == null)
+            {
+                return new AuthResponse
+                {
+                    Success = false,
+                    Message = "Invalid email."
+                };
+            }
+
+            bool validPassword = BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash);
+
+            if (!validPassword)
+            {
+                return new AuthResponse
+                {
+                    Success = false,
+                    Message = "Invalid password."
+                };
+            }
+
+            return new AuthResponse
+            {
+                Success = true,
+                Message = "Login successful."
             };
         }
     }

@@ -1,22 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-
 namespace SpaceXBackend.Services.DTO
 {
-    public class SignUpRequest
+    public class SignInRequest
     {
-        [Required(ErrorMessage = "First name is required.")]
-        public string FirstName { get; set; } = default!;
-
-        [Required(ErrorMessage = "Last name is required.")]
-        public string LastName { get; set; } = default!;
-
         [Required(ErrorMessage = "Email is required.")]
         [EmailAddress(ErrorMessage = "Invalid email format.")]
         public string Email { get; set; } = default!;
 
         [Required(ErrorMessage = "Password is required.")]
-        [MinLength(5, ErrorMessage = "Password must be at least 6 characters long.")]
         public string Password { get; set; } = default!;
     }
 }
