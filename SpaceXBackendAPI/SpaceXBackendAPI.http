@@ -1,0 +1,6 @@
+@SpaceXBackendAPI_HostAddress = http://localhost:5273
+
+GET {{SpaceXBackendAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36414.22 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaceXBackendAPI", "SpaceXBackendAPI\SpaceXBackendAPI.csproj", "{290A0325-DBE7-42C6-BC68-4B30F0775606}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaceXBackend.DataLayer", "SpaceXBackend.DataLayer\SpaceXBackend.DataLayer.csproj", "{AAF4F03B-17B2-4CA3-8A3A-F4765D5A9E30}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{290A0325-DBE7-42C6-BC68-4B30F0775606}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{290A0325-DBE7-42C6-BC68-4B30F0775606}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{290A0325-DBE7-42C6-BC68-4B30F0775606}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{290A0325-DBE7-42C6-BC68-4B30F0775606}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AAF4F03B-17B2-4CA3-8A3A-F4765D5A9E30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AAF4F03B-17B2-4CA3-8A3A-F4765D5A9E30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AAF4F03B-17B2-4CA3-8A3A-F4765D5A9E30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AAF4F03B-17B2-4CA3-8A3A-F4765D5A9E30}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {939BD498-E325-433D-899D-F4857C7B00FE}
+	EndGlobalSection
+EndGlobal
