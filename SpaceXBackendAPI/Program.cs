@@ -10,9 +10,12 @@ builder.Services.AddDbContext<SpaceXDbContext>(options =>
     ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("SpaceXDbConnection"))));
 
 // Add services to the container.
+builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
+
 
 builder.Services.AddControllers();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IEncryptionService, EncryptionService>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

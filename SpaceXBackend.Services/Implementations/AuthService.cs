@@ -9,15 +9,19 @@ namespace SpaceXBackend.Services.Implementations
     public class AuthService : IAuthService
     {
         private readonly SpaceXDbContext _dbContext;
+        private readonly IEncryptionService _encryptionService;
 
-        public AuthService(SpaceXDbContext dbContext)
+        public AuthService(SpaceXDbContext dbContext, IEncryptionService encryptionService)
         {
             _dbContext = dbContext;
+            _encryptionService = encryptionService;
         }
         public async Task<AuthResponse> SignUpAsync(SignUpRequest request)
         {
+            // Encrypt the email of the user
+            var encryptedEmail = _encryptionService.Encrypt(request.Email);
             // Verify that there is no user with the e-mail from the request 
-            if (await _dbContext.Users.AnyAsync(u => u.Email == request.Email))
+            if (await _dbContext.Users.AnyAsync(u => u.Email == encryptedEmail))
             {
                 return new AuthResponse
                 {
@@ -33,7 +37,7 @@ namespace SpaceXBackend.Services.Implementations
             {
                 FirstName = request.FirstName,
                 LastName = request.LastName,
-                Email = request.Email,  // plain text email -> to encrypt
+                Email = encryptedEmail,  
                 PasswordHash = passwordHash
             };
 
