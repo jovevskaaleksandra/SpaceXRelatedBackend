@@ -4,8 +4,8 @@ using SpaceXBackend.DataLayer.Data;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<SpaceXDbContext>(options =>
-    options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
-    ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))));
+    options.UseMySql(builder.Configuration.GetConnectionString("SpaceXDbConnection"),
+    ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("SpaceXDbConnection"))));
 
 // Add services to the container.
 
