@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SpaceXBackend.DataLayer\SpaceXBackend.DataLayer.csproj" />
+    <ProjectReference Include="..\SpaceXBackend.Services\SpaceXBackend.Services.csproj" />
   </ItemGroup>
 
 </Project>

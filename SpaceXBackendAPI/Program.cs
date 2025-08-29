@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using SpaceXBackend.DataLayer.Data;
+using SpaceXBackend.Services.Implementations;
+using SpaceXBackend.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +12,7 @@ builder.Services.AddDbContext<SpaceXDbContext>(options =>
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddScoped<IAuthService, AuthService>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
