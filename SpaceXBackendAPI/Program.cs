@@ -27,7 +27,21 @@ builder.Services.AddHttpClient("SpaceX", c =>
     c.DefaultRequestHeaders.UserAgent.ParseAdd("SpaceXBackend/1.0");
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngular", policy =>
+    {
+        policy.WithOrigins("http://localhost:4200")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 var app = builder.Build();
+
+//app.UseHttpsRedirection();
+app.UseCors("AllowAngular");
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -35,8 +49,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
