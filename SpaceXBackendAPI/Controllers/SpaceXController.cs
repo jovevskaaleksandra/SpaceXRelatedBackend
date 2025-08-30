@@ -28,29 +28,21 @@ namespace SpaceXBackendAPI.Controllers
         [HttpGet("upcoming")]
         public async Task<IActionResult> Upcoming()
         {
-            try
-            {
-                var json = await _spaceXservice.GetUpcomingLaunchesAsync();
-                return Content(json, "application/json");
-            }
-            catch (HttpRequestException ex)
-            {
-                return StatusCode(502, new { error = ex.Message });
-            }
+            var launches = await _spaceXservice.GetUpcomingLaunchesAsync();
+            if (launches.Count == 0)
+                return NotFound();
+
+            return Ok(launches);
         }
 
         [HttpGet("past")]
         public async Task<IActionResult> Past()
         {
-            try
-            {
-                var json = await _spaceXservice.GetPastLaunchesAsync();
-                return Content(json, "application/json");
-            }
-            catch (HttpRequestException ex)
-            {
-                return StatusCode(502, new { error = ex.Message });
-            }
+            var launches = await _spaceXservice.GetPastLaunchesAsync();
+            if (launches.Count == 0)
+                return NotFound();
+
+            return Ok(launches);
         }
     }
 }

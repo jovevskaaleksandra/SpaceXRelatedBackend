@@ -23,7 +23,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddHttpClient("SpaceX", c =>
 {
-    c.BaseAddress = new Uri("https://api.spacexdata.com/v5/");
+    c.BaseAddress = new Uri("https://api.spacexdata.com/v5/"); // make endpoint configurable
     c.DefaultRequestHeaders.UserAgent.ParseAdd("SpaceXBackend/1.0");
 });
 

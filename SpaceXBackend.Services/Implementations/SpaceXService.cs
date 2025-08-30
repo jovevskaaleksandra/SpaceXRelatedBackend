@@ -18,38 +18,49 @@ namespace SpaceXBackend.Services.Implementations
         public async Task<SpaceXLaunchDto?> GetLatestLaunchAsync()
         {
             var response = await _client.GetFromJsonAsync<JsonElement>("launches/latest");
-
             if (response.ValueKind == JsonValueKind.Undefined) return null;
 
-            return new SpaceXLaunchDto
-            {
-                Id = response.GetProperty("id").GetString() ?? string.Empty,
-                Name = response.GetProperty("name").GetString() ?? string.Empty,
-                DateUtc = DateTime.Parse(response.GetProperty("date_utc").GetString() ?? ""),
-                Success = response.TryGetProperty("success", out var successProp) ? successProp.GetBoolean() : null,
-                Details = response.GetProperty("details").GetString(),
-                PatchImage = response.GetProperty("links").GetProperty("patch").GetProperty("small").GetString(),
-                Webcast = response.GetProperty("links").GetProperty("webcast").GetString(),
-                Wikipedia = response.GetProperty("links").GetProperty("wikipedia").GetString()
-            };
+            return MapLaunch(response);
         }
 
-
-        public async Task<string> GetUpcomingLaunchesAsync()
-            => await GetJsonAsync("launches/upcoming");
-
-        public async Task<string> GetPastLaunchesAsync()
-            => await GetJsonAsync("launches/past");
-
-        private async Task<string> GetJsonAsync(string path)
+        public async Task<List<SpaceXLaunchDto>> GetUpcomingLaunchesAsync()
         {
-            var resp = await _client.GetAsync(path);
-            var content = await resp.Content.ReadAsStringAsync();
+            var response = await _client.GetFromJsonAsync<List<JsonElement>>("launches/upcoming");
+            if (response == null)
+                return new List<SpaceXLaunchDto>();
 
-            if (!resp.IsSuccessStatusCode)
-                throw new HttpRequestException($"SpaceX API error {(int)resp.StatusCode}: {content}");
+            return response.Select(MapLaunch).ToList();
+        }
 
-            return content; // raw JSON string
+        public async Task<List<SpaceXLaunchDto>> GetPastLaunchesAsync()
+        {
+            var response = await _client.GetFromJsonAsync<List<JsonElement>>("launches/past");
+            if (response == null)
+                return new List<SpaceXLaunchDto>();
+
+            return response.Select(MapLaunch).ToList();
+        }
+
+        private SpaceXLaunchDto MapLaunch(JsonElement item)
+        {
+            return new SpaceXLaunchDto
+            {
+                Id = item.GetProperty("id").GetString() ?? string.Empty,
+                Name = item.GetProperty("name").GetString() ?? string.Empty,
+                DateUtc = DateTime.Parse(item.GetProperty("date_utc").GetString() ?? ""),
+                Success = item.TryGetProperty("success", out var successProp)
+                    ? successProp.ValueKind switch
+                    {
+                        JsonValueKind.True => true,
+                        JsonValueKind.False => false,
+                        _ => (bool?)null
+                    }
+                    : null,
+                Details = item.GetProperty("details").GetString(),
+                PatchImage = item.GetProperty("links").GetProperty("patch").GetProperty("small").GetString(),
+                Webcast = item.GetProperty("links").GetProperty("webcast").GetString(),
+                Wikipedia = item.GetProperty("links").GetProperty("wikipedia").GetString()
+            };
         }
     }
 }
