@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SpaceXBackend.Services.DTO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace SpaceXBackend.Services.Interfaces
 {
     public interface ISpaceXService
     {
-        Task<string> GetLatestLaunchAsync();
+        Task<SpaceXLaunchDto> GetLatestLaunchAsync();
         Task<string> GetUpcomingLaunchesAsync();
         Task<string> GetPastLaunchesAsync();
     }
