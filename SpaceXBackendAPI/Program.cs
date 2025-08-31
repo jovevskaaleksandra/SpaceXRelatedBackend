@@ -21,9 +21,15 @@ builder.Services.AddScoped<ISpaceXService, SpaceXService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddHttpClient("SpaceX", c =>
+builder.Services.AddHttpClient("SpaceX", (sp,c) =>
 {
-    c.BaseAddress = new Uri("https://api.spacexdata.com/v5/"); // make endpoint configurable
+    var config = sp.GetRequiredService<IConfiguration>();
+    var baseUrl = config["SpaceXAPIEndpoint:BaseUrl"];
+
+    if (string.IsNullOrWhiteSpace(baseUrl))
+        throw new InvalidOperationException("SpaceXAPIEndpoint:BaseUrl must be configured in appsettings.json");
+
+    c.BaseAddress = new Uri(baseUrl);
     c.DefaultRequestHeaders.UserAgent.ParseAdd("SpaceXBackend/1.0");
 });
 

@@ -29,7 +29,7 @@ namespace SpaceXBackend.Services.Implementations
             if (response == null)
                 return new List<SpaceXLaunchDto>();
 
-            return response.Select(MapLaunch).ToList();
+            return response.Select(MapLaunch).OrderByDescending(l => l.DateUtc).ToList();
         }
 
         public async Task<List<SpaceXLaunchDto>> GetPastLaunchesAsync()
@@ -38,7 +38,7 @@ namespace SpaceXBackend.Services.Implementations
             if (response == null)
                 return new List<SpaceXLaunchDto>();
 
-            return response.Select(MapLaunch).ToList();
+            return response.Select(MapLaunch).OrderByDescending(l => l.DateUtc).ToList(); 
         }
 
         private SpaceXLaunchDto MapLaunch(JsonElement item)

@@ -17,14 +17,14 @@ namespace SpaceXBackend.Services.Implementations
             _encryptionService = encryptionService;
         }
 
-        public async Task<AuthResponse> SignUpAsync(SignUpRequest request)
+        public async Task<AuthDto> SignUpAsync(SignUpRequest request)
         {
             // Encrypt the email of the user
             var encryptedEmail = _encryptionService.Encrypt(request.Email);
             // Verify that there is no user with the e-mail from the request 
             if (await _dbContext.Users.AnyAsync(u => u.Email == encryptedEmail))
             {
-                return new AuthResponse
+                return new AuthDto
                 {
                     Success = false,
                     Message = "User with this email already exists."
@@ -45,14 +45,14 @@ namespace SpaceXBackend.Services.Implementations
             _dbContext.Users.Add(user);
             await _dbContext.SaveChangesAsync();
 
-            return new AuthResponse
+            return new AuthDto
             {
                 Success = true,
                 Message = "User registered successfully."
             };
         }
 
-        public async Task<AuthResponse> SignInAsync(SignInRequest request)
+        public async Task<AuthDto> SignInAsync(SignInRequest request)
         {
             var encryptedEmail = _encryptionService.Encrypt(request.Email);
 
@@ -60,7 +60,7 @@ namespace SpaceXBackend.Services.Implementations
 
             if (user == null)
             {
-                return new AuthResponse
+                return new AuthDto
                 {
                     Success = false,
                     Message = "Invalid email."
@@ -71,14 +71,14 @@ namespace SpaceXBackend.Services.Implementations
 
             if (!validPassword)
             {
-                return new AuthResponse
+                return new AuthDto
                 {
                     Success = false,
                     Message = "Invalid password."
                 };
             }
 
-            return new AuthResponse
+            return new AuthDto
             {
                 Success = true,
                 Message = "Login successful."
