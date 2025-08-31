@@ -1,7 +1,10 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using SpaceXBackend.DataLayer.Data;
 using SpaceXBackend.Services.Implementations;
 using SpaceXBackend.Services.Interfaces;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,6 +46,37 @@ builder.Services.AddCors(options =>
     });
 });
 
+var jwtConfig = builder.Configuration.GetSection("Jwt");
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = jwtConfig["Issuer"],
+        ValidAudience = jwtConfig["Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig["Key"]))
+    };
+     options.Events = new JwtBearerEvents
+     {
+         OnChallenge = context =>
+         {
+             context.HandleResponse();
+             context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+             context.Response.ContentType = "application/json";
+             return context.Response.WriteAsync("{\"message\":\"Unauthorized - Token is missing or invalid\"}");
+         }
+     };
+});
+
 var app = builder.Build();
 
 //app.UseHttpsRedirection();
@@ -56,6 +90,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

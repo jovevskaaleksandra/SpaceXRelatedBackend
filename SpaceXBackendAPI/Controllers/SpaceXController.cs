@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SpaceXBackend.Services.Interfaces;
 
@@ -6,6 +7,7 @@ namespace SpaceXBackendAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class SpaceXController : ControllerBase
     {
         private readonly ISpaceXService _spaceXservice;

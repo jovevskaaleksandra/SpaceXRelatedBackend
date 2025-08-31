@@ -1,8 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using SpaceXBackend.DataLayer.Data;
 using SpaceXBackend.DataLayer.Models;
 using SpaceXBackend.Services.DTO;
 using SpaceXBackend.Services.Interfaces;
+using System.Security.Claims;
+using System.Text;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
 
 namespace SpaceXBackend.Services.Implementations
 {
@@ -10,11 +15,13 @@ namespace SpaceXBackend.Services.Implementations
     {
         private readonly SpaceXDbContext _dbContext;
         private readonly IEncryptionService _encryptionService;
+        private readonly IConfiguration _config;
 
-        public AuthService(SpaceXDbContext dbContext, IEncryptionService encryptionService)
+        public AuthService(SpaceXDbContext dbContext, IEncryptionService encryptionService, IConfiguration config)
         {
             _dbContext = dbContext;
             _encryptionService = encryptionService;
+            _config = config;
         }
 
         public async Task<AuthDto> SignUpAsync(SignUpRequest request)
@@ -78,11 +85,37 @@ namespace SpaceXBackend.Services.Implementations
                 };
             }
 
+            var token = GenerateJwtToken(user);
+
             return new AuthDto
             {
                 Success = true,
-                Message = "Login successful."
+                Message = "Login successful.",
+                Token = token
             };
+        }
+
+        private string GenerateJwtToken(User user)
+        {
+            var jwtConfig = _config.GetSection("Jwt");
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig["Key"]));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var claims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email)
+            };
+
+            var token = new JwtSecurityToken(
+                issuer: jwtConfig["Issuer"],
+                audience: jwtConfig["Audience"],
+                claims: claims,
+                expires: DateTime.UtcNow.AddHours(2),
+                signingCredentials: creds
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }
